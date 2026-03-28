@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescue Ready</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:,">
+</head>
+<body>
+    <div class="container">
+        <h1>Rescue Ready</h1>
+        <p>Click the button below in case of emergency.</p>
+        
+        <!-- ✅ Fixed: Added id="emergencyBtn" -->
+        <button id="emergencyBtn" class="emergency-button">Emergency</button>
+        
+        <!-- ✅ Fixed: Added id="status" -->
+        <p id="status">Waiting for emergency signal...</p>
+        <p id="smsStatus"></p>
+
+        <h2>Emergency History</h2>
+        <ul id="emergencyList"></ul>
+    </div>
+    <div id="historyContainer"></div>
+
+    <!-- Load Firebase SDK as modules -->
+    <script type="module" src="./firebaseConfig.js"></script>
+    <script type="module" src="./script.js"></script>
+    <script type="module" src="./script.js"></script>
+   
+</body>
+</html>

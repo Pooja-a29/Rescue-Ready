@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Helper Response - Rescue Ready</title>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // 🔹 Replace with your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyDRtAnnjdXKqP3bTvd2q67Ucvmq23ygqRg",
+  authDomain: "rescue-ready-226b1.firebaseapp.com",
+  projectId: "rescue-ready-226b1",
+  storageBucket: "rescue-ready-226b1.firebasestorage.app",
+  messagingSenderId: "751470426833",
+  appId: "1:751470426833:web:aad04a131306fd9a1163f0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Get emergencyId & userId from URL
+    const params = new URLSearchParams(window.location.search);
+    const emergencyId = params.get("emergencyId");
+    const userId = params.get("userId") || "helper-guest";
+
+    async function loadEmergency() {
+      if (!emergencyId) return;
+      const docRef = doc(db, "emergencies", emergencyId);
+      const snap = await getDoc(docRef);
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById("details").innerText =
+          `📍 Location: Lat ${data.location?.lat}, Lng ${data.location?.lng}`;
+      }
+    }
+
+    async function respondToEmergency(status) {
+      if (!emergencyId) return;
+      const docRef = doc(db, "emergencies", emergencyId);
+      await updateDoc(docRef, {
+        [`helpers.${userId}`]: status
+      });
+      alert(`You have ${status} the request.`);
+    }
+
+    window.acceptEmergency = () => respondToEmergency("accepted");
+    window.declineEmergency = () => respondToEmergency("declined");
+
+    loadEmergency();
+  </script>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background: #f4f4f4; }
+    .card { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); text-align: center; width: 300px; }
+    h2 { margin-bottom: 10px; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer; }
+    .accept { background: #28a745; color: #fff; }
+    .decline { background: #dc3545; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Rescue Ready - Helper</h2>
+    <p id="details">Loading emergency details...</p>
+    <button class="accept" onclick="acceptEmergency()">✅ Accept</button>
+    <button class="decline" onclick="declineEmergency()">❌ Decline</button>
+  </div>
+</body>
+</html>
